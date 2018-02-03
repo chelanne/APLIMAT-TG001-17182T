@@ -15,6 +15,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using aplimat_labs.Models;
+using aplimat_labs.Utilities;
+
 namespace aplimat_labs
 {
     /// <summary>
@@ -27,6 +30,11 @@ namespace aplimat_labs
             InitializeComponent();
         }
 
+        private List<CubeMesh> myCubes = new List<CubeMesh>();
+        private Randomizer rngInt = new Randomizer(-20, 20);
+        private Randomizer rngDouble = new Randomizer(0, 1);
+        private int count = 0;
+
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
             OpenGL gl = args.OpenGL;
@@ -36,15 +44,26 @@ namespace aplimat_labs
 
             // Move Left And Into The Screen
             gl.LoadIdentity();
-            gl.Translate(0.0f, 0.0f, -6.0f);
+            gl.Translate(0.0f, 0.0f, -100.0f);
 
 
-            gl.Rotate(rotation, 0.0f, 1.0f, 0.0f);
+            CubeMesh myCube = new CubeMesh();
+            myCube.Position = new Models.Vector3(Gaussian.Generate(0, 15), rngInt.GenerateInt(), 0);
+            myCubes.Add(myCube);
 
-            Teapot tp = new Teapot();
-            tp.Draw(gl, 14, 1, OpenGL.GL_FILL);
+            foreach (var cube in myCubes)
+            {
+                cube.Draw(gl, rngDouble.GenerateDouble(), rngDouble.GenerateDouble(), rngDouble.GenerateDouble(), rngDouble.GenerateDouble());
+            }
 
-            rotation += 3.0f;
+            count++;
+            if(count == 100)
+            {
+                myCubes.Clear();
+                count = 0;
+            }
+
+
         }
 
         float rotation = 0;
@@ -69,8 +88,8 @@ namespace aplimat_labs
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, light0diffuse);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, light0specular);
-            gl.Enable(OpenGL.GL_LIGHTING);
-            gl.Enable(OpenGL.GL_LIGHT0);
+            gl.Disable(OpenGL.GL_LIGHTING);
+            gl.Disable(OpenGL.GL_LIGHT0);
 
             gl.ShadeModel(OpenGL.GL_SMOOTH);
         }
