@@ -30,10 +30,18 @@ namespace aplimat_labs
             InitializeComponent();
         }
 
+        private CubeMesh mover = new CubeMesh(-25,0,0);
+        private Vector3 acceleration = new Vector3(0.1f, 0, 0);
+        private Vector3 minimum = new Vector3(-25, 0, 0);
+        private Vector3 mousePos = new Vector3();
+        private bool moveRight = true;
+
+        /*
         private List<CubeMesh> myCubes = new List<CubeMesh>();
         private Randomizer rngInt = new Randomizer(-20, 20);
         private Randomizer rngDouble = new Randomizer(0, 1);
         private int count = 0;
+        */
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
@@ -46,8 +54,27 @@ namespace aplimat_labs
             gl.LoadIdentity();
             gl.Translate(0.0f, 0.0f, -100.0f);
 
+            mover.Draw(gl);
+            if (moveRight == true)
+            {
+                mover.Velocity += acceleration;
+                mover.Position.Clamp(25);
+                if (mover.Position.x == 25)
+                {
 
-            CubeMesh myCube = new CubeMesh();
+                    moveRight = false;
+                }
+            }
+
+ 
+            if(moveRight == false)
+            {
+                mover.Velocity -= acceleration;
+                mover.Position.Clamp(minimum);
+            }
+
+
+            /*CubeMesh myCube = new CubeMesh();
             myCube.Position = new Models.Vector3(Gaussian.Generate(0, 15), rngInt.GenerateInt(), 0);
             myCubes.Add(myCube);
 
@@ -61,12 +88,42 @@ namespace aplimat_labs
             {
                 myCubes.Clear();
                 count = 0;
-            }
 
+            ///////
 
+            mousePos.Normalize();
+            mousePos *= 10;
+
+            
+            gl.LineWidth(30.0f);
+            gl.Begin(OpenGL.GL_LINE_STRIP);
+            gl.Color(1.0f, 0.0f, 0.0f);
+            gl.Vertex(0, 0, 0);
+            gl.Vertex(mousePos.x, mousePos.y, 0);
+            gl.End();
+
+            gl.LineWidth(3.0f);
+            gl.Begin(OpenGL.GL_LINE_STRIP);
+            gl.Color(1.0f, 1.0f, 1.0f);
+            gl.Vertex(0, 0, 0);
+            gl.Vertex(mousePos.x, mousePos.y, 0);
+            gl.End();
+            */
         }
 
-        float rotation = 0;
+
+        private void OpenGLControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pos = e.GetPosition(this);
+            mousePos.x = (float)pos.X - (float)Width / 2.0f;
+            mousePos.y = (float)pos.Y - (float)Height / 2.0f;
+            mousePos.y = -mousePos.y;
+
+            Console.WriteLine("mouse x:" + mousePos.x + "y:" + mousePos.y);
+        }
+        
+
+       // float rotation = 0;
 
         private void OpenGLControl_OpenGLInitialized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
