@@ -58,8 +58,45 @@ namespace aplimat_labs.Models
             gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
             gl.End();
 
-            ApplyVelocity();
+            UpdateMotion();
        }
+
+        public void Draw(OpenGL gl, double a, double b, double c)
+        {
+            gl.Color(a, b, c);
+            gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
+            //Front face
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y + 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y - 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y + 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z + 0.5f);
+            //Right face
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y + 0.5f, this.Position.z - 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
+            //Back face
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y + 0.5f, this.Position.z - 0.5f);
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
+            //Left face
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y + 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y - 0.5f, this.Position.z + 0.5f);
+            gl.End();
+            gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
+            //Top face
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y + 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y + 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y + 0.5f, this.Position.z - 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y + 0.5f, this.Position.z - 0.5f);
+            gl.End();
+            gl.Begin(OpenGL.GL_TRIANGLE_STRIP);
+            //Bottom face
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y - 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z + 0.5f);
+            gl.Vertex(this.Position.x - 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
+            gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
+            gl.End();
+
+            UpdateMotion();
+        }
 
         public void Draw(OpenGL gl)
         {
@@ -94,12 +131,14 @@ namespace aplimat_labs.Models
             gl.Vertex(this.Position.x + 0.5f, this.Position.y - 0.5f, this.Position.z - 0.5f);
             gl.End();
 
-            ApplyVelocity();
+            UpdateMotion();
         }
 
-        private void ApplyVelocity()
+        private void UpdateMotion()
         {
-            this.Position += Velocity;
+            this.Velocity += this.Acceleration;
+            this.Position += this.Velocity;
+            this.Acceleration *= 0;
         }
     }
 }
